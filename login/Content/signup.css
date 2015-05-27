@@ -1,0 +1,11 @@
+.menu-item--alternate {
+	position: absolute;
+	bottom: 10px;
+	right: -3px;
+	line-height: normal;
+	color: white;
+}
+
+.login-form--centered {
+	text-align: center;
+}

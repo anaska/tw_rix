@@ -1,0 +1,18 @@
+﻿
+    <div class="login-wrapper site-center">
+        <h1 class="login-title">
+            Please log in into your account.
+        </h1>
+        <form class="login-form">
+            <input type="text" placeholder="Enter username">
+            <input type="password" placeholder="Enter password">
+            <input type="submit" class="submit-button" value="Log In">
+            <a href="#" class="forgot">Forgot your credentials?</a>
+        </form>
+        <h2 class="between-titles">Or you can sign up for an account!</h2>
+        <!--<a href="sign-up.html" class="sign-up--from-login">
+            Sign Up
+        </a>-->
+        @Html.ActionLink("Sign Up", "SignUp", "Home", null, new { @class = "sign-up--from-login" })
+    </div>
+
