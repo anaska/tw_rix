@@ -183,3 +183,18 @@
 .footer-alternate .column-item--hero{
 	border-color: white;
 }
+
+.source-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.search .search-type[checked="true"][value="SourceCode"] ~ .source-hidden{
+    opacity: 1;
+    visibility: visible;
+}
+
+.search .search-type[checked="false"][value="SourceCode"] ~ .source-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
