@@ -37,7 +37,7 @@ namespace login.Controllers
         }
 
         // GET: Searches/Create
-        public ActionResult Create()
+        public ActionResult Show()
         {
             return View();
         }
@@ -47,7 +47,7 @@ namespace login.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,SearchDate,SearchTerm,SearchFrequency,UserEmail,SearchType")] Search search)
+        public ActionResult Show([Bind(Include = "Id,SearchDate,SearchTerm,SearchFrequency,UserEmail,SearchType")] Search search)
         {
             if (ModelState.IsValid)
             {
@@ -68,7 +68,7 @@ namespace login.Controllers
                     db.Searches.Add(search);
                     db.SaveChanges();
                 }
-                return RedirectToAction("Index");
+                //return RedirectToAction("Index");
             }
 
             return View(search);
