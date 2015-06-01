@@ -5,9 +5,9 @@ using System.Web;
 
 namespace login.Models
 {
-    public class SourceCode
+    public class Video
     {
-        public string TextCode { get; set; }
         public string Url { get; set; }
+        public string Title { get; set; }
     }
 }

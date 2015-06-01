@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 
 namespace login.Models
@@ -12,6 +13,8 @@ namespace login.Models
         public int SearchFrequency { get; set; }
         public string UserEmail { get; set; }
         public SearchType SearchType { get; set; }
+        public IEnumerable<Video> Videos { get; set; }
+        public IEnumerable<Repo> Repos { get; set; }
     }
 
     public class SearchDBContext : DbContext

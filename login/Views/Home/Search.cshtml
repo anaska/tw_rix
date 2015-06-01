@@ -6,7 +6,7 @@
         @Html.EditorFor(model => model.SearchTerm, new { htmlAttributes = new { @placeholder = "Enter search term, language and github user", @autocomplete  = "off" } })
         <div class="search-buttons-container">
             @Html.RadioButtonFor(model => model.SearchType, login.Models.SearchType.SourceCode, new { @class = "search-type", @checked = "true" })
-            <p>Source Code</p>
+            <p>Repositories</p>
             @Html.RadioButtonFor(model => model.SearchType, login.Models.SearchType.Article, new { @class = "search-type" })
             <p>Article</p>
             @Html.RadioButtonFor(model => model.SearchType, login.Models.SearchType.Video, new { @class = "search-type" })

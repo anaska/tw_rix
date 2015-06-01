@@ -13,6 +13,7 @@ using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Threading;
+using Octokit;
 
 using Google.Apis.Authentication.OAuth2;
 using Google.Apis.Services;
@@ -68,7 +69,8 @@ namespace login.Controllers
                 //RunAsyncGithub().Wait();
                 try
                 {
-                    youtubeUrls = RunYoutube();
+                    search.Videos = RunYoutube(search.SearchTerm);
+                    search.Repos =  GetGithub(search.SearchTerm, Language.CSharp);
                 }
                 catch (AggregateException ex)
                 {
@@ -187,7 +189,25 @@ namespace login.Controllers
             }
         }
 
-        public List<string> RunYoutube()
+        public IEnumerable<login.Models.Repo> GetGithub(string searchTerm, Language lang)
+        {
+            List<login.Models.Repo> repos = new List<Repo>();
+            var github = new GitHubClient(new ProductHeaderValue("rix-tw"));
+            var searchReposRequest = new SearchRepositoriesRequest(searchTerm)
+            {
+                Language = lang,
+                Order = SortDirection.Descending,
+                PerPage = 20
+            };
+            var searchRepoResult = github.Search.SearchRepo(searchReposRequest).Result;
+            foreach(var result in searchRepoResult.Items)
+            {
+                repos.Add(new Repo { AvatarUrl = result.Owner.AvatarUrl, Description = result.Description, Lang = result.Language, Url = result.HtmlUrl, User = result.Owner.Login });
+            }
+            return repos;
+        }
+
+        public IEnumerable<login.Models.Video> RunYoutube(string searchTerm)
         {
             var youtubeService = new YouTubeService(new BaseClientService.Initializer()
             {
@@ -196,13 +216,13 @@ namespace login.Controllers
             });
 
             var searchListRequest = youtubeService.Search.List("snippet");
-            searchListRequest.Q = "globalcyclingnetwork"; // Replace with your search term.
-            searchListRequest.MaxResults = 50;
+            searchListRequest.Q = searchTerm; // Replace with your search term.
+            searchListRequest.MaxResults = 10;
 
             // Call the search.list method to retrieve results matching the specified query term.
             var searchListResponse = searchListRequest.Execute();
 
-            List<string> videos = new List<string>();
+            List<login.Models.Video> videos = new List<login.Models.Video>();
             List<string> channels = new List<string>();
             List<string> playlists = new List<string>();
 
@@ -213,7 +233,8 @@ namespace login.Controllers
                 switch (searchResult.Id.Kind)
                 {
                     case "youtube#video":
-                        videos.Add(String.Format("{0} ({1})", searchResult.Snippet.Title, searchResult.Id.VideoId));
+                        //videos.Add(String.Format("{0} ({1})", searchResult.Snippet.Title, searchResult.Id.VideoId));
+                        videos.Add(new login.Models.Video { Title = searchResult.Snippet.Title, Url = "https://www.youtube.com/embed/" + searchResult.Id.VideoId });
                         break;
 
                     case "youtube#channel":
@@ -226,9 +247,6 @@ namespace login.Controllers
                 }
             }
             return videos;
-            //Console.WriteLine(String.Format("Videos:\n{0}\n", string.Join("\n", videos)));
-            //Console.WriteLine(String.Format("Channels:\n{0}\n", string.Join("\n", channels)));
-            //Console.WriteLine(String.Format("Playlists:\n{0}\n", string.Join("\n", playlists)));
         }
     
 
