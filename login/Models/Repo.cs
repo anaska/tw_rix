@@ -7,6 +7,7 @@ namespace login.Models
 {
     public class Repo
     {
+        public string Name { get; set; }
         public string User { get; set; }
         public string Url { get; set; }
         public string AvatarUrl { get; set; }

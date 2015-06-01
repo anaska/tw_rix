@@ -202,7 +202,7 @@ namespace login.Controllers
             var searchRepoResult = github.Search.SearchRepo(searchReposRequest).Result;
             foreach(var result in searchRepoResult.Items)
             {
-                repos.Add(new Repo { AvatarUrl = result.Owner.AvatarUrl, Description = result.Description, Lang = result.Language, Url = result.HtmlUrl, User = result.Owner.Login });
+                repos.Add(new Repo { Name = result.Name, AvatarUrl = result.Owner.AvatarUrl, Description = result.Description, Lang = result.Language, Url = result.HtmlUrl, User = result.Owner.Login });
             }
             return repos;
         }

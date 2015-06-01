@@ -2,6 +2,7 @@
            <p>Repos</p>
 @foreach(var r in Model.Repos)
 {
+    <p>@r.Name</p>
     <p>@r.Description</p>
     <p>@r.Url</p>
     <img src=@r.AvatarUrl\>
