@@ -21,6 +21,8 @@ using Google.Apis.Upload;
 using Google.Apis.Util.Store;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
+using System.Xml;
+using System.Text;
 
 namespace login.Controllers
 {
@@ -69,8 +71,9 @@ namespace login.Controllers
                 //RunAsyncGithub().Wait();
                 try
                 {
-                    search.Videos = RunYoutube(search.SearchTerm);
-                    search.Repos =  GetGithub(search.SearchTerm, Language.CSharp);
+                    if (search.SearchType == SearchType.Article) search.Articles = ParseRssFile();
+                    if (search.SearchType == SearchType.Video) search.Videos = RunYoutube(search.SearchTerm);
+                    if (search.SearchType == SearchType.SourceCode) search.Repos =  GetGithub(search.SearchTerm, Language.CSharp);
                 }
                 catch (AggregateException ex)
                 {
@@ -249,7 +252,46 @@ namespace login.Controllers
             return videos;
         }
     
+        public IEnumerable<Article> ParseRssFile()
+        {
+            List<Article> Articles = new List<Article>();
 
+            XmlDocument rssXmlDoc = new XmlDocument();
+            rssXmlDoc.Load("http://www.pcworld.com/howto/index.rss");
+
+            XmlNodeList rssNodes = rssXmlDoc.SelectNodes("rss/channel/item");
+
+            StringBuilder rssContent = new StringBuilder();
+ 
+            foreach (XmlNode rssNode in rssNodes)
+            {
+                Article newArticle = new Article();
+                XmlNode rssSubNode = rssNode.SelectSingleNode("title");
+                newArticle.Title = rssSubNode != null ? rssSubNode.InnerText : "";
+
+                //rssSubNode = rssNode.SelectSingleNode("pubDate");
+                //newArticle.PublicationDate = rssSubNode != null ? Convert.ToDateTime(rssSubNode.InnerText) : "";
+
+                rssSubNode = rssSubNode.SelectSingleNode("author");
+                newArticle.Author = rssSubNode != null ? rssSubNode.InnerText : "";
+
+                rssSubNode = rssSubNode.SelectSingleNode("description");
+                newArticle.Description = rssSubNode != null ? rssSubNode.InnerText : "";
+
+                rssSubNode = rssSubNode.SelectSingleNode("link");
+                newArticle.Url = rssSubNode != null ? rssSubNode.InnerText : "";
+
+                rssSubNode = rssSubNode.SelectSingleNode("media:thumbnail");
+                newArticle.ThumbnailUrl = rssSubNode != null ? rssSubNode.Attributes.ToString() : "";
+
+                XmlNode categories = rssNode.SelectSingleNode("categories");
+                rssSubNode = categories.SelectSingleNode("category");
+                newArticle.Category = rssSubNode != null ? rssSubNode.InnerText : "";
+
+                Articles.Add(newArticle);
+            }
+            return Articles;
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

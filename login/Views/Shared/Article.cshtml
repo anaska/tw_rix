@@ -1,1 +1,8 @@
-﻿<p>Article</p>
+﻿@model login.Models.Search
+
+<p>Articles</p>
+
+@foreach (var a in Model.Articles)
+{
+    <p>@a.Title</p>
+}

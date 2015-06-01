@@ -15,6 +15,7 @@ namespace login.Models
         public SearchType SearchType { get; set; }
         public IEnumerable<Video> Videos { get; set; }
         public IEnumerable<Repo> Repos { get; set; }
+        public IEnumerable<Article> Articles { get; set; }
     }
 
     public class SearchDBContext : DbContext
