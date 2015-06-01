@@ -80,3 +80,118 @@ a.profile-resource--author:hover {
 .tag-list--smaller a {
 	font-size: 16px;
 }
+
+.manage-page-title {
+    font-size: 26px;
+    text-align: center;
+    font-family: 'Montserrat';
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.manage-page-subtitle {
+    font-size: 16px;
+    text-align: center;
+    font-family: 'Montserrat';
+    margin-top: 0px;
+    color:#333;
+}
+
+.auth-manage {
+    font-family: 'Montserrat';
+    font-size: 16px;
+    color: #333;
+}
+
+.auth-manage-link {
+    font-family: 'Montserrat';
+}
+
+.auth-manage-link a{
+    color: #333;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom .3s ease;
+    padding-bottom: 3px;
+}
+
+.auth-manage-link a:hover {
+    border-bottom: 2px solid #333;
+}
+
+.manage-wrapper ~ .footer {
+    display: none;
+}
+
+.manage-wrapper {
+    text-align: center;
+}
+
+.password-change {
+    text-align: center;
+    font-family: 'Montserrat';
+}
+
+.pass-form {
+    width: 300px;
+    margin:0px auto;
+}
+
+.form-control {
+    width: 100%;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    height: 30px;
+    border: 2px solid #333;
+    border-radius: 15px;
+    box-sizing:border-box;
+    text-align: center;
+    transition: border-color .3s ease;
+}
+
+.form-control:focus{
+    outline: none;
+}
+
+.new-pass .form-control:focus {
+    border-color: #01A16E;
+    color: #01A163;
+}
+
+.btn.btn-default {
+    background:none;
+    border: 2px solid #333;
+    width: 150px;
+    height: 28px;
+    box-sizing: border-box;
+    border-radius: 15px;
+    font-family: 'Montserrat';
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 0;
+    padding-bottom: 0;
+    cursor: pointer;
+    transition: background .3s ease, color .3s ease, border-color .3s ease;
+}
+
+.btn.btn-default:hover{ 
+    background: #01A16E;
+    color: white;
+    border: 2px solid transparent;
+}
+
+.password-change ~ .footer {
+    display: none;
+}
+
+.validation-summary-errors {
+    color: red;
+}
+
+.validation-summary-errors ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
