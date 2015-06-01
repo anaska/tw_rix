@@ -14,6 +14,7 @@
             <p>Video</p>
             @Html.RadioButtonFor(model => model.SearchType, login.Models.SearchType.Slide, new { @class = "search-type slide" })
             <p>Slide</p>
+
         </div>
     }
 </div>
@@ -21,7 +22,7 @@
 @switch (Model.SearchType)
 {
     case login.Models.SearchType.SourceCode:
-        @Html.Partial("SourceCode",)
+        @Html.Partial("SourceCode")
         break;
     case login.Models.SearchType.Article:
         @Html.Partial("Article")
