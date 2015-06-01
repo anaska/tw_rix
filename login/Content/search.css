@@ -198,3 +198,41 @@
     opacity: 0;
     visibility: hidden;
 }
+
+.title-search-page {
+    text-align: center;
+    font-family: 'Montserrat';
+    color: #333;
+}
+.repo-wrapper {
+    width: 45%;
+    display: inline-block;
+    vertical-align: top;
+    font-family: 'Montserrat';
+    text-align: left;
+    margin-right: 4%;
+    border-bottom: 2px solid #333;
+}
+.repo-wrapper:nth-child(2n){
+    margin-right:0px;
+}
+
+.repo-container {
+    text-align: center;
+}
+.repo-name {
+    font-size: 26px;
+    text-transform: uppercase;
+}
+.repo-description {
+    font-style: italic;
+}
+.user-image {
+    max-width: 50px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.repo-owner {
+    display: inline-block;
+    vertical-align: middle;
+}
