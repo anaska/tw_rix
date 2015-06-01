@@ -161,7 +161,7 @@ namespace login.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                var url = new Uri("https://api.github.com/search/code?q=addClass+in:file+language:js+repo:jquery/jquery");
+                var url = new Uri("https://api.github.com/search/?q=addClass+in:file+language:js+repo:jquery/jquery");
                 using (var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, url))
                 {
                     httpRequestMessage.Headers.Add(System.Net.HttpRequestHeader.Accept.ToString(),
