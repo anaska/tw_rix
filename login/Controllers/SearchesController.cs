@@ -11,13 +11,24 @@ using Microsoft.AspNet.Identity;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using System.IO;
+using System.Threading;
+
+using Google.Apis.Authentication.OAuth2;
+using Google.Apis.Services;
+using Google.Apis.Upload;
+using Google.Apis.Util.Store;
+using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
 
 namespace login.Controllers
 {
     public class SearchesController : Controller
     {
+        
         private SearchDBContext db = new SearchDBContext();
         private List<string> githubUrls = new List<string>();
+        private List<string> youtubeUrls = new List<string>();
         // GET: Searches
         public ActionResult Index()
         {
@@ -54,8 +65,18 @@ namespace login.Controllers
         {
             if (ModelState.IsValid)
             {
-                RunAsyncGithub().Wait();
-
+                //RunAsyncGithub().Wait();
+                try
+                {
+                    youtubeUrls = RunYoutube();
+                }
+                catch (AggregateException ex)
+                {
+                    foreach (var e in ex.InnerExceptions)
+                    {
+                        Console.WriteLine("Error: " + e.Message);
+                    }
+                }
                 var newSearch = (from s in db.Searches
                                   where s.SearchTerm == search.SearchTerm
                                   select s).SingleOrDefault();
@@ -73,7 +94,7 @@ namespace login.Controllers
                     db.Searches.Add(search);
                     db.SaveChanges();
                 }
-                //return RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
 
             return View(search);
@@ -165,6 +186,51 @@ namespace login.Controllers
                 }
             }
         }
+
+        public List<string> RunYoutube()
+        {
+            var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+            {
+                ApiKey = "AIzaSyDuW3JrKor6WKZDFmj2Dw-Y4GoDlLgXnDw",
+                ApplicationName = this.GetType().ToString()
+            });
+
+            var searchListRequest = youtubeService.Search.List("snippet");
+            searchListRequest.Q = "globalcyclingnetwork"; // Replace with your search term.
+            searchListRequest.MaxResults = 50;
+
+            // Call the search.list method to retrieve results matching the specified query term.
+            var searchListResponse = searchListRequest.Execute();
+
+            List<string> videos = new List<string>();
+            List<string> channels = new List<string>();
+            List<string> playlists = new List<string>();
+
+            // Add each result to the appropriate list, and then display the lists of
+            // matching videos, channels, and playlists.
+            foreach (var searchResult in searchListResponse.Items)
+            {
+                switch (searchResult.Id.Kind)
+                {
+                    case "youtube#video":
+                        videos.Add(String.Format("{0} ({1})", searchResult.Snippet.Title, searchResult.Id.VideoId));
+                        break;
+
+                    case "youtube#channel":
+                        channels.Add(String.Format("{0} ({1})", searchResult.Snippet.Title, searchResult.Id.ChannelId));
+                        break;
+
+                    case "youtube#playlist":
+                        playlists.Add(String.Format("{0} ({1})", searchResult.Snippet.Title, searchResult.Id.PlaylistId));
+                        break;
+                }
+            }
+            return videos;
+            //Console.WriteLine(String.Format("Videos:\n{0}\n", string.Join("\n", videos)));
+            //Console.WriteLine(String.Format("Channels:\n{0}\n", string.Join("\n", channels)));
+            //Console.WriteLine(String.Format("Playlists:\n{0}\n", string.Join("\n", playlists)));
+        }
+    
 
         protected override void Dispose(bool disposing)
         {
