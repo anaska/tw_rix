@@ -1,11 +1,15 @@
 ﻿@model login.Models.Search
-           <p>Repos</p>
+<h1 class="title-search-page">We found the following repositories</h1>
+<div class="repo-container">
 @foreach(var r in Model.Repos)
 {
-    <p>@r.Name</p>
-    <p>@r.Description</p>
-    <p>@r.Url</p>
-    <img src=@r.AvatarUrl\>
-    <p>@r.Lang</p>
-    <p>@r.User</p>
+   <div class="repo-wrapper">
+    <h1 class="repo-name">@r.Name</h1>
+    <p class="repo-description">@r.Description</p>
+    <img class="user-image" src=@r.AvatarUrl \>
+    <p class="repo-owner">@r.User</p>
+    <a href="@r.Url" class="repo-url">Link</a>
+    <p class="repo-language">@r.Lang</p>
+   </div>
 }
+</div>
