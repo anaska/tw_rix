@@ -1,1 +1,8 @@
-﻿<p>Video</p>
+﻿@model login.Models.Search
+
+<p>Video</p>
+
+@foreach (var v in Model.Videos)
+{
+    <iframe width="560" height="315" src=@v.Url frameborder="0" allowfullscreen></iframe>
+}
