@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using login.Models;
+using Microsoft.AspNet.Identity;
 
 namespace login.Controllers
 {
@@ -46,12 +47,27 @@ namespace login.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,SearchDate,SearchTerm,SearchFrequency")] Search search)
+        public ActionResult Create([Bind(Include = "Id,SearchDate,SearchTerm,SearchFrequency,UserEmail,SearchType")] Search search)
         {
             if (ModelState.IsValid)
             {
-                db.Searches.Add(search);
-                db.SaveChanges();
+                var newSearch = (from s in db.Searches
+                                  where s.SearchTerm == search.SearchTerm
+                                  select s).SingleOrDefault();
+
+                if (newSearch != null)
+                {
+                    newSearch.SearchFrequency += 1;
+                    db.SaveChanges();
+                }
+                else
+                {
+                    search.UserEmail = User.Identity.GetUserName();
+                    search.SearchDate = System.DateTime.Now;
+                    search.SearchFrequency = 1;
+                    db.Searches.Add(search);
+                    db.SaveChanges();
+                }
                 return RedirectToAction("Index");
             }
 

@@ -1,8 +1,24 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@model login.Models.Search
     <div class="search-bar-container">
-        <form class="search">
+    @using (Html.BeginForm("Create", "Searches", FormMethod.Post, new { @class = "search" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.EditorFor(model => model.SearchTerm, new { htmlAttributes = new { @placeholder = "Enter search term, language and github user" } })
+        <div class="search-buttons-container">
+            @Html.RadioButtonFor(model => model.SearchType, login.Models.SearchType.SourceCode, new { @class = "search-type", @checked = "true" })
+            <p>Source Code</p>
+            @Html.RadioButtonFor(model => model.SearchType, login.Models.SearchType.Article, new { @class = "search-type" })
+            <p>Article</p>
+            @Html.RadioButtonFor(model => model.SearchType, login.Models.SearchType.Video, new { @class = "search-type" })
+            <p>Video</p>
+            @Html.RadioButtonFor(model => model.SearchType, login.Models.SearchType.Slide, new { @class = "search-type"})
+            <p>Slide</p>
+        </div>
+    }
+        @*<form class="search">
             <input type="text" placeholder="Enter keyword...">
             <div class="search-buttons-container">
                 <input type="radio" name="category" value="article" class="search-type" checked/>
@@ -14,7 +30,7 @@
                 <input type="radio" name="category" value="slide" class="search-type" />
                 <p>Prezentari</p>
             </div>
-        </form>
+        </form>*@
         <!--
            <div class="search-message">
             You searched for:

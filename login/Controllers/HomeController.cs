@@ -26,7 +26,7 @@ namespace login.Controllers
 
             return View();
         }
-
+        [Authorize]
         public ActionResult Search()
         {
             return View();
