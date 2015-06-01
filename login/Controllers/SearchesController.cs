@@ -8,13 +8,16 @@ using System.Web;
 using System.Web.Mvc;
 using login.Models;
 using Microsoft.AspNet.Identity;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace login.Controllers
 {
     public class SearchesController : Controller
     {
         private SearchDBContext db = new SearchDBContext();
-
+        private List<string> githubUrls = new List<string>();
         // GET: Searches
         public ActionResult Index()
         {
@@ -51,6 +54,8 @@ namespace login.Controllers
         {
             if (ModelState.IsValid)
             {
+                RunAsyncGithub().Wait();
+
                 var newSearch = (from s in db.Searches
                                   where s.SearchTerm == search.SearchTerm
                                   select s).SingleOrDefault();
@@ -129,6 +134,36 @@ namespace login.Controllers
             db.Searches.Remove(search);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public async Task RunAsyncGithub()
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var url = new Uri("https://api.github.com/search/code?q=addClass+in:file+language:js+repo:jquery/jquery");
+                using (var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, url))
+                {
+                    httpRequestMessage.Headers.Add(System.Net.HttpRequestHeader.Accept.ToString(),
+                      "application/vnd.github.v3+json");
+                    httpRequestMessage.Headers.Add(System.Net.HttpRequestHeader.ContentType.ToString(),
+                        "application/json");
+                    httpRequestMessage.Headers.Add("User-Agent", "rix explorer");
+                    using (var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage))
+                    {
+                        //to something with the response
+                        var data = await httpResponseMessage.Content.ReadAsStringAsync();
+                        var json = JObject.Parse(data);
+                        IList<JToken> results = json["items"].Children().ToList();
+
+                        // serialize JSON results into .NET objects
+                        foreach (JToken result in results)
+                        {
+                            string resultURL = result.Value<string>("html_url");
+                            githubUrls.Add(resultURL);
+                        }
+                    }
+                }
+            }
         }
 
         protected override void Dispose(bool disposing)
