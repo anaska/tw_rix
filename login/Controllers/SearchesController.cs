@@ -94,7 +94,7 @@ namespace login.Controllers
                     db.Searches.Add(search);
                     db.SaveChanges();
                 }
-                return RedirectToAction("Index");
+                //return RedirectToAction("Index");
             }
 
             return View(search);
