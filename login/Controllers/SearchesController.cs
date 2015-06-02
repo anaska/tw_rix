@@ -206,7 +206,7 @@ namespace login.Controllers
 
             var searchListRequest = youtubeService.Search.List("snippet");
             searchListRequest.Q = searchTerm; // Replace with your search term.
-            searchListRequest.MaxResults = 10;
+            searchListRequest.MaxResults = 20;
 
             // Call the search.list method to retrieve results matching the specified query term.
             var searchListResponse = searchListRequest.Execute();
