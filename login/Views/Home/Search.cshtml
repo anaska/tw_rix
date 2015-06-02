@@ -1,9 +1,10 @@
 ﻿@model login.Models.Search
+
     <div class="search-bar-container">
     @using (Html.BeginForm("Show", "Searches", FormMethod.Post, new { @class = "search" }))
     {
         @Html.AntiForgeryToken()
-        @Html.EditorFor(model => model.SearchTerm, new { htmlAttributes = new { @placeholder = "Enter search term, language and github user", @autocomplete  = "off" } })
+        @Html.EditorFor(model => model.SearchTerm, new { htmlAttributes = new { @placeholder = "Enter search term and language", @autocomplete  = "off" } })
         <div class="search-buttons-container">
             @Html.RadioButtonFor(model => model.SearchType, login.Models.SearchType.SourceCode, new { @class = "search-type", @checked = "true" })
             <p>Repositories</p>
@@ -11,14 +12,6 @@
             <p>Article</p>
             @Html.RadioButtonFor(model => model.SearchType, login.Models.SearchType.Video, new { @class = "search-type" })
             <p>Video</p>
-            @Html.RadioButtonFor(model => model.SearchType, login.Models.SearchType.Slide, new { @class = "search-type"})
-            <p>Slide</p>
-            <select>
-                <option value="volvo">Volvo</option>
-                <option value="saab">Saab</option>
-                <option value="mercedes">Mercedes</option>
-                <option value="audi">Audi</option>
-            </select>
         </div>
     }
     </div>

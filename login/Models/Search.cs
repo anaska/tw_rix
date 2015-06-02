@@ -13,6 +13,7 @@ namespace login.Models
         public int SearchFrequency { get; set; }
         public string UserEmail { get; set; }
         public SearchType SearchType { get; set; }
+        public string SearchLang { get; set; }
         public IEnumerable<Video> Videos { get; set; }
         public IEnumerable<Repo> Repos { get; set; }
         public IEnumerable<Article> Articles { get; set; }

@@ -68,12 +68,17 @@ namespace login.Controllers
         {
             if (ModelState.IsValid)
             {
-                //RunAsyncGithub().Wait();
+                string[] words = search.SearchTerm.Split(' ');
+                if (words.Count() == 2)
+                {
+                    search.SearchTerm = words[0];
+                    search.SearchLang = words[1];
+                }
                 try
                 {
-                    if (search.SearchType == SearchType.Article) search.Articles = ParseRssFile();
+                    if (search.SearchType == SearchType.Article) search.Articles = ParseRssFile(search.SearchTerm);
                     if (search.SearchType == SearchType.Video) search.Videos = RunYoutube(search.SearchTerm);
-                    if (search.SearchType == SearchType.SourceCode) search.Repos =  GetGithub(search.SearchTerm, Language.CSharp);
+                    if (search.SearchType == SearchType.SourceCode) search.Repos =  GetGithub(search.SearchTerm, search.SearchLang);
                 }
                 catch (AggregateException ex)
                 {
@@ -162,38 +167,18 @@ namespace login.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task RunAsyncGithub()
+        public IEnumerable<login.Models.Repo> GetGithub(string searchTerm, string searchLang)
         {
-            using (var httpClient = new HttpClient())
+            Language lang;
+            try
             {
-                var url = new Uri("https://api.github.com/search/?q=addClass+in:file+language:js+repo:jquery/jquery");
-                using (var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, url))
-                {
-                    httpRequestMessage.Headers.Add(System.Net.HttpRequestHeader.Accept.ToString(),
-                      "application/vnd.github.v3+json");
-                    httpRequestMessage.Headers.Add(System.Net.HttpRequestHeader.ContentType.ToString(),
-                        "application/json");
-                    httpRequestMessage.Headers.Add("User-Agent", "rix explorer");
-                    using (var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage))
-                    {
-                        //to something with the response
-                        var data = await httpResponseMessage.Content.ReadAsStringAsync();
-                        var json = JObject.Parse(data);
-                        IList<JToken> results = json["items"].Children().ToList();
-
-                        // serialize JSON results into .NET objects
-                        foreach (JToken result in results)
-                        {
-                            string resultURL = result.Value<string>("html_url");
-                            githubUrls.Add(resultURL);
-                        }
-                    }
-                }
+                lang = (Language)Enum.Parse(typeof(Language), searchLang, true);
             }
-        }
+            catch(Exception)
+            {
+                lang = Language.CSharp;
+            }
 
-        public IEnumerable<login.Models.Repo> GetGithub(string searchTerm, Language lang)
-        {
             List<login.Models.Repo> repos = new List<Repo>();
             var github = new GitHubClient(new ProductHeaderValue("rix-tw"));
             var searchReposRequest = new SearchRepositoriesRequest(searchTerm)
@@ -252,7 +237,7 @@ namespace login.Controllers
             return videos;
         }
     
-        public IEnumerable<Article> ParseRssFile()
+        public IEnumerable<Article> ParseRssFile(string searchTerm)
         {
             List<Article> Articles = new List<Article>();
 
@@ -269,29 +254,34 @@ namespace login.Controllers
                 XmlNode rssSubNode = rssNode.SelectSingleNode("title");
                 newArticle.Title = rssSubNode != null ? rssSubNode.InnerText : "";
 
-                //rssSubNode = rssNode.SelectSingleNode("pubDate");
-                //newArticle.PublicationDate = rssSubNode != null ? Convert.ToDateTime(rssSubNode.InnerText) : "";
+                rssSubNode = rssNode.SelectSingleNode("pubDate");
+                string date = rssSubNode.InnerText;
+                newArticle.PublicationDate = DateTime.Parse(date);
 
-                rssSubNode = rssSubNode.SelectSingleNode("author");
+                rssSubNode = rssNode.SelectSingleNode("author");
                 newArticle.Author = rssSubNode != null ? rssSubNode.InnerText : "";
 
-                rssSubNode = rssSubNode.SelectSingleNode("description");
+                rssSubNode = rssNode.SelectSingleNode("description");
                 newArticle.Description = rssSubNode != null ? rssSubNode.InnerText : "";
 
-                rssSubNode = rssSubNode.SelectSingleNode("link");
+                rssSubNode = rssNode.SelectSingleNode("link");
                 newArticle.Url = rssSubNode != null ? rssSubNode.InnerText : "";
 
-                rssSubNode = rssSubNode.SelectSingleNode("media:thumbnail");
-                newArticle.ThumbnailUrl = rssSubNode != null ? rssSubNode.Attributes.ToString() : "";
+                XmlNamespaceManager xmlNsMgr= new XmlNamespaceManager(new NameTable());
+                xmlNsMgr.AddNamespace("media", "http://search.yahoo.com/mrss/");
+                rssSubNode = rssNode.SelectSingleNode("media:thumbnail", xmlNsMgr);
+                newArticle.ThumbnailUrl = rssSubNode != null ? rssSubNode.Attributes["url"].Value : "";
 
                 XmlNode categories = rssNode.SelectSingleNode("categories");
                 rssSubNode = categories.SelectSingleNode("category");
                 newArticle.Category = rssSubNode != null ? rssSubNode.InnerText : "";
 
-                Articles.Add(newArticle);
+                if (newArticle.Title.Contains(searchTerm) || newArticle.Description.Contains(searchTerm))
+                    Articles.Add(newArticle);
             }
             return Articles;
         }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

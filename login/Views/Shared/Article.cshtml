@@ -5,4 +5,10 @@
 @foreach (var a in Model.Articles)
 {
     <p>@a.Title</p>
+    <p>@a.PublicationDate</p>
+    <p>@a.Author</p>
+    <p>@Html.Raw(a.Description)</p>
+    <p><a href="@a.Url">To read this article in full or to leave a comment, please click here</a></p>
+    <p><img src=@a.ThumbnailUrl alt="Thumbnail" /></p>
+    <p>Category: @a.Category</p>
 }
