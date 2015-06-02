@@ -186,7 +186,7 @@ namespace login.Controllers
             {
                 Language = lang,
                 Order = SortDirection.Descending,
-                PerPage = 20
+                PerPage = 100
             };
             var searchRepoResult = github.Search.SearchRepo(searchReposRequest).Result;
             foreach(var result in searchRepoResult.Items)
