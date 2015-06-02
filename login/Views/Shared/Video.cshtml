@@ -1,7 +1,10 @@
 ﻿@model login.Models.Search
-
-@foreach (var v in Model.Videos)
-{
-    <h2>@v.Title</h2>
-    <iframe width="560" height="315" src=@v.Url frameborder="0" allowfullscreen></iframe>
-}
+<div class="videos-container">
+    @foreach (var v in Model.Videos)
+    {
+        <div class="video-wrapper">
+            <h2 class="video-title">@v.Title</h2>
+            <iframe width="560" height="315" src=@v.Url frameborder="0" allowfullscreen></iframe>
+        </div>
+    }
+</div>

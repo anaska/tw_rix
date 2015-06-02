@@ -3,7 +3,6 @@
 <div class="results-container">
     @foreach (var a in Model.Articles)
     {
-
         <div class="search-result">
             <h1 class="result-text result-title">@a.Title</h1>
             <h2 class="result-text result-author">
@@ -13,29 +12,12 @@
                 <span>Read the original article</span>
                 <a href=@a.Url>HERE</a>
             </h3>
+            <img class="article-image" src=@a.ThumbnailUrl alt="Thumbnail" />
             <p class="result-text result-description">
                 @Html.Raw(a.Description)
             </p>
-            <ul class="tag-list">
-                <li class="tag">
-                    <a href="#">CSS</a>
-                </li>
-                <li class="tag">
-                    <a href="#">HTML</a>
-                </li>
-                <li class="tag">
-                    <a href="#">WEB</a>
-                </li>
-                <li class="tag">
-                    <a href="#">jQuery</a>
-                </li>
-                <li class="tag">
-                    <a href="#">AngularJS</a>
-                </li>
-            </ul>
+            <p class="result-date">@a.PublicationDate</p>
+            <p class="result-category">Category: @a.Category</p>
         </div>
-        <p>@a.PublicationDate</p>
-        <p><img src=@a.ThumbnailUrl alt="Thumbnail" /></p>
-        <p>Category: @a.Category</p>
     }
  </div>

@@ -90,6 +90,7 @@
 	padding-bottom: 15px;
 	padding-top: 30px;
 	border-bottom: 3px solid #333;
+    text-align: center;
 }
 .search-result:last-child {
 	border-bottom: 0px solid #333;
@@ -235,4 +236,45 @@
 .repo-owner {
     display: inline-block;
     vertical-align: middle;
+}
+
+.video-wrapper {
+    width: 45%;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 5%;
+
+}
+
+.video-wrapper:nth-child(2n) {
+    margin-right: 0;
+}
+
+.video-wrapper iframe {
+    max-width: 100%;
+}
+.video-title {
+    font-family: 'Montserrat';
+    color: #333;
+}
+.videos-container {
+    text-align:center;
+}
+
+section.page{
+    font-family: 'Montserrat';
+    text-align: justify;
+}
+
+.result-date {
+    font-family: 'Montserrat';
+}
+
+.result-category {
+    font-family: 'Montserrat';
+}
+
+.article-image {
+    width: 400px;
+    margin-top: 30px;
 }
