@@ -94,6 +94,7 @@ namespace login.Controllers
                 if (newSearch != null)
                 {
                     newSearch.SearchFrequency += 1;
+                    newSearch.SearchDate = System.DateTime.Now;
                     db.SaveChanges();
                 }
                 else

@@ -1,14 +1,41 @@
 ﻿@model login.Models.Search
 
-<p>Articles</p>
+<div class="results-container">
+    @foreach (var a in Model.Articles)
+    {
 
-@foreach (var a in Model.Articles)
-{
-    <p>@a.Title</p>
-    <p>@a.PublicationDate</p>
-    <p>@a.Author</p>
-    <p>@Html.Raw(a.Description)</p>
-    <p><a href="@a.Url">To read this article in full or to leave a comment, please click here</a></p>
-    <p><img src=@a.ThumbnailUrl alt="Thumbnail" /></p>
-    <p>Category: @a.Category</p>
-}
+        <div class="search-result">
+            <h1 class="result-text result-title">@a.Title</h1>
+            <h2 class="result-text result-author">
+                <span>Written by </span>@a.Author
+            </h2>
+            <h3 class="result-text result-source">
+                <span>Read the original article</span>
+                <a href=@a.Url>HERE</a>
+            </h3>
+            <p class="result-text result-description">
+                @Html.Raw(a.Description)
+            </p>
+            <ul class="tag-list">
+                <li class="tag">
+                    <a href="#">CSS</a>
+                </li>
+                <li class="tag">
+                    <a href="#">HTML</a>
+                </li>
+                <li class="tag">
+                    <a href="#">WEB</a>
+                </li>
+                <li class="tag">
+                    <a href="#">jQuery</a>
+                </li>
+                <li class="tag">
+                    <a href="#">AngularJS</a>
+                </li>
+            </ul>
+        </div>
+        <p>@a.PublicationDate</p>
+        <p><img src=@a.ThumbnailUrl alt="Thumbnail" /></p>
+        <p>Category: @a.Category</p>
+    }
+ </div>
