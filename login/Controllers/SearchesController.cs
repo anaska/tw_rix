@@ -240,45 +240,49 @@ namespace login.Controllers
     
         public IEnumerable<Article> ParseRssFile(string searchTerm)
         {
+            List<Uri> rssFeeds = new List<Uri>{new Uri("http://www.pcworld.com/howto/index.rss"), new Uri("http://www.computerworld.com/index.rss")};
             List<Article> Articles = new List<Article>();
 
-            XmlDocument rssXmlDoc = new XmlDocument();
-            rssXmlDoc.Load("http://www.pcworld.com/howto/index.rss");
-
-            XmlNodeList rssNodes = rssXmlDoc.SelectNodes("rss/channel/item");
-
-            StringBuilder rssContent = new StringBuilder();
- 
-            foreach (XmlNode rssNode in rssNodes)
+            foreach(var rssFeed in rssFeeds)
             {
-                Article newArticle = new Article();
-                XmlNode rssSubNode = rssNode.SelectSingleNode("title");
-                newArticle.Title = rssSubNode != null ? rssSubNode.InnerText : "";
+                XmlDocument rssXmlDoc = new XmlDocument();
+                rssXmlDoc.Load(rssFeed.ToString());
 
-                rssSubNode = rssNode.SelectSingleNode("pubDate");
-                string date = rssSubNode.InnerText;
-                newArticle.PublicationDate = DateTime.Parse(date);
+                XmlNodeList rssNodes = rssXmlDoc.SelectNodes("rss/channel/item");
 
-                rssSubNode = rssNode.SelectSingleNode("author");
-                newArticle.Author = rssSubNode != null ? rssSubNode.InnerText : "";
+                StringBuilder rssContent = new StringBuilder();
 
-                rssSubNode = rssNode.SelectSingleNode("description");
-                newArticle.Description = rssSubNode != null ? rssSubNode.InnerText : "";
+                foreach (XmlNode rssNode in rssNodes)
+                {
+                    Article newArticle = new Article();
+                    XmlNode rssSubNode = rssNode.SelectSingleNode("title");
+                    newArticle.Title = rssSubNode != null ? rssSubNode.InnerText : "";
 
-                rssSubNode = rssNode.SelectSingleNode("link");
-                newArticle.Url = rssSubNode != null ? rssSubNode.InnerText : "";
+                    rssSubNode = rssNode.SelectSingleNode("pubDate");
+                    string date = rssSubNode.InnerText;
+                    newArticle.PublicationDate = DateTime.Parse(date);
 
-                XmlNamespaceManager xmlNsMgr= new XmlNamespaceManager(new NameTable());
-                xmlNsMgr.AddNamespace("media", "http://search.yahoo.com/mrss/");
-                rssSubNode = rssNode.SelectSingleNode("media:thumbnail", xmlNsMgr);
-                newArticle.ThumbnailUrl = rssSubNode != null ? rssSubNode.Attributes["url"].Value : "";
+                    rssSubNode = rssNode.SelectSingleNode("author");
+                    newArticle.Author = rssSubNode != null ? rssSubNode.InnerText : "";
 
-                XmlNode categories = rssNode.SelectSingleNode("categories");
-                rssSubNode = categories.SelectSingleNode("category");
-                newArticle.Category = rssSubNode != null ? rssSubNode.InnerText : "";
+                    rssSubNode = rssNode.SelectSingleNode("description");
+                    newArticle.Description = rssSubNode != null ? rssSubNode.InnerText : "";
 
-                if (newArticle.Title.Contains(searchTerm) || newArticle.Description.Contains(searchTerm))
-                    Articles.Add(newArticle);
+                    rssSubNode = rssNode.SelectSingleNode("link");
+                    newArticle.Url = rssSubNode != null ? rssSubNode.InnerText : "";
+
+                    XmlNamespaceManager xmlNsMgr = new XmlNamespaceManager(new NameTable());
+                    xmlNsMgr.AddNamespace("media", "http://search.yahoo.com/mrss/");
+                    rssSubNode = rssNode.SelectSingleNode("media:thumbnail", xmlNsMgr);
+                    newArticle.ThumbnailUrl = rssSubNode != null ? rssSubNode.Attributes["url"].Value : "";
+
+                    XmlNode categories = rssNode.SelectSingleNode("categories");
+                    rssSubNode = categories.SelectSingleNode("category");
+                    newArticle.Category = rssSubNode != null ? rssSubNode.InnerText : "";
+
+                    if (newArticle.Title.Contains(searchTerm) || newArticle.Description.Contains(searchTerm))
+                        Articles.Add(newArticle);
+                }
             }
             return Articles;
         }
